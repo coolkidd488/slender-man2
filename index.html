@@ -6,59 +6,83 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Slender: O Despertar</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Babel para compilar TSX no navegador (Essencial para GitHub Pages sem build) -->
     <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
     <style>
-        body { margin: 0; overflow: hidden; background-color: #000; color: #fff; font-family: 'Courier New', Courier, monospace; cursor: none; }
+        body { margin: 0; overflow: hidden; background-color: #000; color: #fff; font-family: 'Courier New', Courier, monospace; }
         #root { width: 100vw; height: 100vh; }
+        
+        /* Tela de Carregamento Inicial */
+        #loading-screen {
+            position: fixed;
+            inset: 0;
+            background: #000;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+            transition: opacity 1s ease;
+        }
+        .loader {
+            width: 48px;
+            height: 48px;
+            border: 5px solid #FFF;
+            border-bottom-color: transparent;
+            border-radius: 50%;
+            display: inline-block;
+            box-sizing: border-box;
+            animation: rotation 1s linear infinite;
+        }
+        @keyframes rotation { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+
         .crt-overlay {
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06));
+            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.1) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.03), rgba(0, 255, 0, 0.01), rgba(0, 0, 255, 0.03));
             background-size: 100% 2px, 3px 100%;
             pointer-events: none;
             z-index: 50;
         }
-        .noise {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            opacity: 0.05;
-            pointer-events: none;
-            z-index: 60;
-            background-image: url('https://upload.wikimedia.org/wikipedia/commons/b/b1/Static_noise.gif');
-        }
-        @keyframes flash {
-            0% { opacity: 1; filter: invert(0); }
-            50% { opacity: 0.8; filter: invert(1); }
-            100% { opacity: 1; filter: invert(0); }
-        }
-        .animate-jumpscare {
-            animation: flash 0.05s infinite;
-        }
     </style>
+    <script>
+        // SHIM para evitar erro de 'process is not defined' no GitHub Pages
+        window.process = { env: { API_KEY: "" } };
+    </script>
 <script type="importmap">
 {
   "imports": {
-    "react/": "https://esm.sh/react@^19.2.3/",
-    "react": "https://esm.sh/react@^19.2.3",
-    "@react-three/fiber": "https://esm.sh/@react-three/fiber@^9.5.0",
-    "@google/genai": "https://esm.sh/@google/genai@^1.36.0",
-    "react-dom/": "https://esm.sh/react-dom@^19.2.3/",
-    "@react-three/drei": "https://esm.sh/@react-three/drei@^10.7.7",
-    "three": "https://esm.sh/three@^0.182.0"
+    "react/": "https://esm.sh/react@19.0.0/",
+    "react": "https://esm.sh/react@19.0.0",
+    "react-dom": "https://esm.sh/react-dom@19.0.0",
+    "react-dom/": "https://esm.sh/react-dom@19.0.0/",
+    "three": "https://esm.sh/three@0.170.0",
+    "@react-three/fiber": "https://esm.sh/@react-three/fiber@9.0.0-alpha.8",
+    "@react-three/drei": "https://esm.sh/@react-three/drei@10.0.0",
+    "@google/genai": "https://esm.sh/@google/genai@1.36.0"
   }
 }
 </script>
 </head>
 <body>
+    <div id="loading-screen">
+        <span class="loader"></span>
+        <p style="margin-top: 20px; letter-spacing: 5px; font-size: 10px; color: #444;">INICIANDO FLORESTA...</p>
+    </div>
     <div id="root"></div>
-    <!-- Carrega o ponto de entrada como script de módulo compilado pelo Babel -->
-    <script type="text/babel" data-type="module" src="./index.tsx"></script>
+    <div class="crt-overlay"></div>
+    <script type="text/babel" data-type="module">
+        import './index.tsx';
+        // Remove a tela de load assim que o script carregar
+        window.addEventListener('load', () => {
+            setTimeout(() => {
+                const ls = document.getElementById('loading-screen');
+                if(ls) ls.style.opacity = '0';
+                setTimeout(() => ls?.remove(), 1000);
+            }, 2000);
+        });
+    </script>
 </body>
 </html>
