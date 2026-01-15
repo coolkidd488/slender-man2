@@ -1,11 +1,13 @@
 
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pt-br">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Slender: The React Awakening</title>
+    <title>Slender: O Despertar</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Babel para compilar TSX no navegador (Essencial para GitHub Pages sem build) -->
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
     <style>
         body { margin: 0; overflow: hidden; background-color: #000; color: #fff; font-family: 'Courier New', Courier, monospace; cursor: none; }
         #root { width: 100vw; height: 100vh; }
@@ -31,6 +33,14 @@
             z-index: 60;
             background-image: url('https://upload.wikimedia.org/wikipedia/commons/b/b1/Static_noise.gif');
         }
+        @keyframes flash {
+            0% { opacity: 1; filter: invert(0); }
+            50% { opacity: 0.8; filter: invert(1); }
+            100% { opacity: 1; filter: invert(0); }
+        }
+        .animate-jumpscare {
+            animation: flash 0.05s infinite;
+        }
     </style>
 <script type="importmap">
 {
@@ -48,5 +58,7 @@
 </head>
 <body>
     <div id="root"></div>
+    <!-- Carrega o ponto de entrada como script de módulo compilado pelo Babel -->
+    <script type="text/babel" data-type="module" src="./index.tsx"></script>
 </body>
 </html>
